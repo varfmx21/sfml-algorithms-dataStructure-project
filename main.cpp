@@ -1,4 +1,4 @@
-// Luis Fernando Valderrábano García A01644530
+// LUIS FERNANDO VALDERRABANO GARCIA A01644530
 
 // Crear el archivo o
 // g++ -IC:\SFML-2.6.1\include -c main.cpp -o main.o 

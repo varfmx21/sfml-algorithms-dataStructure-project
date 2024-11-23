@@ -2,9 +2,15 @@
 
 #include "Menu.h"
 #include <iostream>
+#include <vector>
+#include <sstream>
+#include <chrono>                 // For timing the sorting process
+#include <thread>                 // For introducing delays using std::this_thread::sleep_for
+#include <algorithm>              // For std::max_element and std::swap
+#include <iostream>               // For debugging or error messages
 
 Menu::Menu(float width, float height) : selectedItemIndex(0), inSubMenu(false), currentSubMenu(-1) {
-    if (!font.loadFromFile("knightWarrior.otf")) {
+    if (!font.loadFromFile("3.ttf")) {
         // Manejar error de carga de fuente
     }
 
@@ -148,4 +154,75 @@ void Menu::ExitSubMenu() {
 
 int Menu::GetCurrentSubMenu() const {
     return currentSubMenu;
+}
+
+std::vector<int> Menu::getNumbers(sf::RenderWindow &window) {
+    std::vector<int> numbers;
+    std::string input;
+    sf::Font font;
+    sf::Text text;
+    sf::Text prompt;
+
+    if (!font.loadFromFile("knightWarrior.otf")) {
+        // Handle font loading error
+    }
+
+    // Set up prompt text
+    prompt.setFont(font);
+    prompt.setString("Enter numbers separated by spaces, then press Enter:");
+    prompt.setCharacterSize(24);
+    prompt.setFillColor(sf::Color::White);
+    prompt.setPosition(
+        (window.getSize().x - prompt.getLocalBounds().width) / 2,
+        window.getSize().y * 0.3f // Adjust this factor to control vertical position
+    );
+
+    // Set up input text
+    text.setFont(font);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(window.getSize().x / 2, window.getSize().y * 0.5f);
+
+    bool entering = true;
+    while (entering && window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return {}; // Exit immediately if the window is closed
+            } else if (event.type == sf::Event::TextEntered) {
+                if (event.text.unicode == '\b' && !input.empty()) {
+                    input.pop_back(); // Handle backspace
+                } else if (event.text.unicode < 128) {
+                    input += static_cast<char>(event.text.unicode);
+                }
+            } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+                // Convert input to numbers and end loop
+                std::stringstream ss(input);
+                int number;
+                while (ss >> number) numbers.push_back(number);
+                entering = false; // Set entering to false to exit main loop
+                break; // Break from the event polling loop
+            }
+        }
+
+        // Only render if still entering
+        if (entering) {
+            window.clear();
+
+            // Update input text
+            text.setString(input);
+            // Center the input text
+            sf::FloatRect textBounds = text.getLocalBounds();
+            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text.setPosition(window.getSize().x / 2.0f, window.getSize().y * 0.5f);
+
+            // Draw the prompt and input text
+            window.draw(prompt);
+            window.draw(text);
+            window.display();
+        }
+    }
+
+    return numbers;
 }

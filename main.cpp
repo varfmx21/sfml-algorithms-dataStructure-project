@@ -10,7 +10,7 @@
 #include "Menu.h"
 #include <SFML/Graphics.hpp>
 
-#include "Algorithms.cpp"
+#include "Algorithms.h"
 
 #include <iostream>
 #include <vector>
@@ -65,11 +65,51 @@ int main() {
                                     switch (currentSubMenu) {
                                         case 0: // Sorting Algorithms
                                             switch (menu.GetPressedItem()) {
-                                                case 0: std::cout << "Bubble Sort selected!" << std::endl; break;
-                                                case 1: std::cout << "Selection Sort selected!" << std::endl; break;
-                                                case 2: std::cout << "Insertion Sort selected!" << std::endl; break;
-                                                case 3: std::cout << "Merge Sort selected!" << std::endl; break;
-                                                case 4: std::cout << "Quick Sort selected!" << std::endl; break;
+                                                case 0: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+                                                    
+                                                    bubbleSortVisualized(window, numbers);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                }
+                                                case 1: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+
+                                                    selectionSortVisualized(window, numbers);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                }
+                                                case 2: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+
+                                                    insertionSortVisualized(window, numbers);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                }
+                                                case 3: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+
+                                                    mergeSortVisualized(window, numbers);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                }
+                                                case 4: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+
+                                                    quickSortVisualized(window, numbers);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                }
                                             }
                                             break;
                                         case 1: // Linear Data Structures

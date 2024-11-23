@@ -1,13 +1,7 @@
 // LUIS FERNANDO VALDERRABANO GARCIA A01644530
 
+#include "Constants.h"
 #include "Menu.h"
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <chrono>                 // For timing the sorting process
-#include <thread>                 // For introducing delays using std::this_thread::sleep_for
-#include <algorithm>              // For std::max_element and std::swap
-#include <iostream>               // For debugging or error messages
 
 Menu::Menu(float width, float height) : selectedItemIndex(0), inSubMenu(false), currentSubMenu(-1) {
     if (!font.loadFromFile("3.ttf")) {
@@ -27,6 +21,7 @@ Menu::Menu(float width, float height) : selectedItemIndex(0), inSubMenu(false), 
         menu[i].setFont(font);
         menu[i].setFillColor(i == 0 ? mainColor : sf::Color::White);
         menu[i].setString(menuOptions[i]);
+        menu[i].setCharacterSize(mainSize);
         float textWidth = menu[i].getLocalBounds().width;
         menu[i].setPosition(sf::Vector2f((width - textWidth) / 2, height / (MAX_NUMBER_OF_ITEMS + 1) * (i + 1)));
     }
@@ -59,7 +54,7 @@ Menu::Menu(float width, float height) : selectedItemIndex(0), inSubMenu(false), 
         for (int j = 0; j < subMenuSizes[i]; j++) {
             subMenu[i][j].setFont(font);
             subMenu[i][j].setString(subMenus[i][j]);
-            subMenu[i][j].setCharacterSize(30);
+            subMenu[i][j].setCharacterSize(mainSize);
             subMenu[i][j].setPosition(sf::Vector2f(
                 (width - subMenu[i][j].getLocalBounds().width) / 2,
                 height / (subMenuSizes[i] + 1) * (j + 1)
@@ -163,14 +158,14 @@ std::vector<int> Menu::getNumbers(sf::RenderWindow &window) {
     sf::Text text;
     sf::Text prompt;
 
-    if (!font.loadFromFile("knightWarrior.otf")) {
+    if (!font.loadFromFile("3.ttf")) {
         // Handle font loading error
     }
 
     // Set up prompt text
     prompt.setFont(font);
-    prompt.setString("Enter numbers separated by spaces, then press Enter:");
-    prompt.setCharacterSize(24);
+    prompt.setString("Inserta los numeros separados por espacios, luego presiona Enter:");
+    prompt.setCharacterSize(mainSize);
     prompt.setFillColor(sf::Color::White);
     prompt.setPosition(
         (window.getSize().x - prompt.getLocalBounds().width) / 2,
@@ -225,4 +220,82 @@ std::vector<int> Menu::getNumbers(sf::RenderWindow &window) {
     }
 
     return numbers;
+}
+
+int Menu::getTarget(sf::RenderWindow &window) {
+    std::string input;
+    sf::Font font;
+    sf::Text text;
+    sf::Text prompt;
+
+    if (!font.loadFromFile("3.ttf")) {
+        // Handle font loading error
+    }
+
+    // Set up prompt text
+    prompt.setFont(font);
+    prompt.setString("Ingresa el numero que quieres buscar:");
+    prompt.setCharacterSize(mainSize);
+    prompt.setFillColor(sf::Color::White);
+    prompt.setPosition(
+        (window.getSize().x - prompt.getLocalBounds().width) / 2,
+        window.getSize().y * 0.3f // Adjust this factor to control vertical position
+    );
+
+    // Set up input text
+    text.setFont(font);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(window.getSize().x / 2, window.getSize().y * 0.5f);
+
+    bool entering = true;
+    while (entering && window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return -1; // Return an invalid target if the window is closed
+            } else if (event.type == sf::Event::TextEntered) {
+                if (event.text.unicode == '\b' && !input.empty()) {
+                    input.pop_back(); // Handle backspace
+                } else if (event.text.unicode < 128) {
+                    input += static_cast<char>(event.text.unicode);
+                }
+            } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+                // Try to convert the input to an integer
+                std::stringstream ss(input);
+                int target;
+                if (ss >> target) {
+                    entering = false; // Exit the loop once we have a valid target
+                } else {
+                    input.clear(); // Clear the input if conversion fails
+                    input = "Numero invalido."; // Display error message
+                }
+                break; // Break from the event polling loop
+            }
+        }
+
+        // Only render if still entering
+        if (entering) {
+            window.clear();
+
+            // Update input text
+            text.setString(input);
+            // Center the input text
+            sf::FloatRect textBounds = text.getLocalBounds();
+            text.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+            text.setPosition(window.getSize().x / 2.0f, window.getSize().y * 0.5f);
+
+            // Draw the prompt and input text
+            window.draw(prompt);
+            window.draw(text);
+            window.display();
+        }
+    }
+
+    // Return the valid target number
+    std::stringstream ss(input);
+    int target;
+    ss >> target;
+    return target;
 }

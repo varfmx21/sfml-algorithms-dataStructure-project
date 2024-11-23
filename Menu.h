@@ -4,6 +4,7 @@
 #define MENU_H
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 #define MAX_NUMBER_OF_ITEMS 5 // Main menu options
 #define MAX_SUBMENU_ITEMS 6   // Maximum number of items in any submenu
@@ -19,10 +20,10 @@ public:
     void MoveDown(int size);
     void ShowSubMenu(int index);
     void ExitSubMenu();
-
     int GetPressedItem() const { return selectedItemIndex; }
     int GetCurrentSubMenu() const;
 
+    std::vector<int> getNumbers(sf::RenderWindow &window);
 private:
     int selectedItemIndex;
     bool inSubMenu;            // Indicates if the user is in a submenu

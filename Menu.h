@@ -3,12 +3,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include <SFML/Graphics.hpp>
-#include <vector>
-
-#define MAX_NUMBER_OF_ITEMS 5 // Main menu options
-#define MAX_SUBMENU_ITEMS 6   // Maximum number of items in any submenu
-#define mainColor sf::Color::Magenta
+#include "Constants.h"
 
 class Menu {
 public:
@@ -24,6 +19,8 @@ public:
     int GetCurrentSubMenu() const;
 
     std::vector<int> getNumbers(sf::RenderWindow &window);
+    int getTarget(sf::RenderWindow &window);
+
 private:
     int selectedItemIndex;
     bool inSubMenu;            // Indicates if the user is in a submenu

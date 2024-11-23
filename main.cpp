@@ -7,13 +7,9 @@
 // g++ -LC:\SFML-2.6.1\lib .\main.o -o app.exe -lmingw32 -lsfml-graphics -lsfml-window -lsfml-system -lsfml-main -mwindows
 
 // g++ -IC:\SFML-2.6.1\include -LC:\SFML-2.6.1\lib main.cpp Menu.cpp -o app.exe -lmingw32 -lsfml-graphics -lsfml-window -lsfml-system -lsfml-main -mwindows
+#include "Constants.h"
 #include "Menu.h"
-#include <SFML/Graphics.hpp>
-
 #include "Algorithms.h"
-
-#include <iostream>
-#include <vector>
 
 // Declare the number of items for each submenu
 std::vector<int> subMenuSizes = {
@@ -129,8 +125,29 @@ int main() {
                                             break;
                                         case 3: // Searching Algorithms
                                             switch (menu.GetPressedItem()) {
-                                                case 0: std::cout << "Linear Search selected!" << std::endl; break;
-                                                case 1: std::cout << "Binary Search selected!" << std::endl; break;
+                                                case 0: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+
+                                                    int target = menu.getTarget(window);
+
+                                                    linearSearchVisualized(window, numbers, target);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                }
+                                                case 1: {
+                                                    std::vector<int> numbers = menu.getNumbers(window);
+
+                                                    int target = menu.getTarget(window);
+
+                                                    binarySearchVisualized(window, numbers, target);
+
+                                                    menu.ExitSubMenu();
+
+                                                    break;
+                                                    
+                                                }
                                             }
                                             break;
                                     }

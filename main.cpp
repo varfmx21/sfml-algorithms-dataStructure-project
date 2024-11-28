@@ -239,28 +239,45 @@ int main() {
                                         //-----------STRUCTRAS NO LINEAL-----------//
                                         //----------------------------------------//
                                             switch (menu.GetPressedItem()) {
-                                                case 0: std::cout << "Binary Tree AVL selected!" << std::endl; break;
+                                                case 0: {
+                                                    //--------------------------//
+                                                    //-----------AVL-----------//
+                                                    //------------------------//
+
+                                                    AVLTree avlTree(window);
+                                                    bool isSubMenuActive = true;
+
+                                                    while (isSubMenuActive && window.isOpen()) {
+                                                        sf::Event event;
+                                                        while (window.pollEvent(event)) {
+                                                            if (event.type == sf::Event::Closed) {
+                                                                window.close();
+                                                            }
+
+                                                            if (event.type == sf::Event::KeyPressed && 
+                                                                event.key.code == sf::Keyboard::Escape) {
+                                                                isSubMenuActive = false;
+                                                            }
+
+                                                            avlTree.handleInput(event, window);
+                                                        }
+
+                                                        window.clear(sf::Color::Black);
+                                                        avlTree.draw(window);
+                                                        window.display();
+                                                    }
+                                                    
+                                                    menu.ExitSubMenu();
+                                                    break;
+
+                                                    break;
+                                                }
                                                 case 1: {
                                                     //------------------------------//
                                                     //-----------DJIKSTRA-----------//
                                                     //------------------------------//
 
-                                                    sf::Font font;
-                                                    if (!font.loadFromFile("path/to/font.ttf")) {
-                                                        std::cerr << "Error loading font" << std::endl;
-                                                    }
-                                                    sf::Text infoText("Select start node (click), then end node, press SPACE to run", font, 20);
-                                                    infoText.setFillColor(sf::Color::White);
-                                                    infoText.setPosition(10, 10);
-
-                                                    std::vector<Node> nodes;
-                                                    std::vector<Edge> edges;
-
-                                                    // Generate default graph with 8 nodes
-                                                    generateDefaultGraph(nodes, edges, font, 8);
-
-                                                    int startNode = -1, endNode = -1;
-                                                    bool selectingStart = true;
+                                                    Graph graph(window);
                                                     bool isSubMenuActive = true;
 
                                                     while (isSubMenuActive && window.isOpen()) {
@@ -270,94 +287,44 @@ int main() {
                                                                 window.close();
                                                             }
                                                             if (event.type == sf::Event::MouseButtonPressed) {
-                                                                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                                                                for (auto& node : nodes) {
-                                                                    if (node.shape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePos))) {
-                                                                        if (selectingStart) {
-                                                                            startNode = node.id;
-                                                                            node.shape.setFillColor(sf::Color::Green);
-                                                                            selectingStart = false;
-                                                                            infoText.setString("Select end node (click)");
-                                                                        } else if (!selectingStart && node.id != startNode) {
-                                                                            endNode = node.id;
-                                                                            node.shape.setFillColor(sf::Color::Red);
-                                                                            infoText.setString("Press SPACE to find shortest path");
-                                                                        }
-                                                                    }
-                                                                }
+                                                                graph.handleClick(sf::Mouse::getPosition(window));
                                                             }
-                                                            if (event.type == sf::Event::KeyPressed) {
-                                                                if (event.key.code == sf::Keyboard::Escape) {
-                                                                    isSubMenuActive = false;
-                                                                }
-                                                                else if (event.key.code == sf::Keyboard::Space) {
-                                                                    if (startNode != -1 && endNode != -1) {
-                                                                        runDijkstra(window, nodes, edges, startNode, endNode);
-                                                                        // After Dijkstra completes
-                                                                        isSubMenuActive = false;
-                                                                    }
-                                                                }
+                                                            if (event.type == sf::Event::KeyPressed && 
+                                                                event.key.code == sf::Keyboard::Escape) {
+                                                                isSubMenuActive = false;
+                                                            }
+                                                            if (event.type == sf::Event::KeyPressed && 
+                                                                event.key.code == sf::Keyboard::R) {
+                                                                graph.reset();
                                                             }
                                                         }
 
-                                                        window.clear();
-                                                        drawGraph(window, nodes, edges, infoText);
+                                                        window.clear(sf::Color::Black);
+                                                        graph.draw(window);
                                                         window.display();
                                                     }
-
+                                                    
                                                     menu.ExitSubMenu();
                                                     break;
                                                 }
                                                 case 2: {
 
                                                     //-------------------------//
-                                                    //-----------DFS-----------//
+                                                    //-----------BFS-----------//
                                                     //-------------------------//
 
-                                                    Maze maze(21,21,20);
-                                                    maze.draw(window);
-                                                    window.display();
-
-                                                    if (maze.solveMazeBFS(window)) { // Using DFS-based solveMaze
-                                                        std::cout << "Maze solved using BFS!" << std::endl;
-                                                    } else {
-                                                        std::cout << "Maze could not be solved using BFS!" << std::endl;
-                                                    }
-
-                                                    // Keep the window open to display the solution
-                                                    while (true) {
-                                                        sf::Event event;
-                                                        if (window.pollEvent(event)) {
-                                                            menu.ExitSubMenu();
-                                                            break;
-                                                        }
-                                                    }
+                                                    visualizeMazeAlgorithm("BFS");
+                                                    menu.ExitSubMenu();
                                                     break;
                                                 }
                                                 case 3:  {
 
                                                     //-------------------------//
-                                                    //-----------BFS-----------//
+                                                    //-----------DFS-----------//
                                                     //-------------------------//
 
-                                                    Maze maze(21,21,20);
-                                                    maze.draw(window);
-                                                    window.display();
-
-                                                    if (maze.solveMaze(window)) { // Using DFS-based solveMaze
-                                                        std::cout << "Maze solved using DFS!" << std::endl;
-                                                    } else {
-                                                        std::cout << "Maze could not be solved using DFS!" << std::endl;
-                                                    }
-
-                                                    // Keep the window open to display the solution
-                                                    while (true) {
-                                                        sf::Event event;
-                                                        if (window.pollEvent(event)) {
-                                                            menu.ExitSubMenu();
-                                                            break;
-                                                        }
-                                                    }
+                                                    visualizeMazeAlgorithm("DFS");
+                                                    menu.ExitSubMenu();
                                                     break;
                                                 }
                                             }

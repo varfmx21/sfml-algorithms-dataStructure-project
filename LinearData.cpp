@@ -51,7 +51,7 @@ void Stack::draw(sf::RenderWindow& window) {
     instructionText1.setPosition(xPosition, promptY);
     window.draw(instructionText1);
 
-    sf::Text instructionText2("pop O(1)\npush O(1)", font, mainSize);
+    sf::Text instructionText2("Last In, First Out (LIFO)\npop O(1)\npush O(1)", font, mainSize);
     instructionText2.setFillColor(sf::Color::White);
     instructionText2.setPosition(xPosition, promptY + 50);  // Positioned at the top-left of the window
     window.draw(instructionText2);
@@ -223,7 +223,7 @@ void Queue::draw(sf::RenderWindow& window) {
     exitText.setPosition(xPosition, yPosition);
     window.draw(exitText);
 
-    sf::Text infoText("Enqueue O(1)\nDequeue O(1)", font, mainSize);
+    sf::Text infoText("First In, First Out (FIFO)\nEnqueue O(1)\nDequeue O(1)", font, mainSize  );
     infoText.setFillColor(sf::Color::White);
     infoText.setPosition(xPosition, yPosition + 50);
     window.draw(infoText);
@@ -269,11 +269,16 @@ LinkedList::Node::Node(int val, const sf::Font& font) : value(val), next(nullptr
     shape.setOutlineThickness(2);
     shape.setOutlineColor(sf::Color::White);
 
-    // Setup value text
+    // Setup value text with center alignment
     valueText.setFont(font);
     valueText.setCharacterSize(mainSize);
     valueText.setFillColor(sf::Color::Black);
     valueText.setString(std::to_string(value));
+    
+    // Center the text origin
+    sf::FloatRect textRect = valueText.getLocalBounds();
+    valueText.setOrigin(textRect.left + textRect.width/2.0f,
+                       textRect.top + textRect.height/2.0f);
 
     // Setup arrow
     arrow.setSize(sf::Vector2f(40, 2));
@@ -301,10 +306,9 @@ void LinkedList::updatePositions() {
         current->shape.setPosition(x, y);
         
         // Center the text in the node
-        sf::FloatRect textBounds = current->valueText.getLocalBounds();
         current->valueText.setPosition(
-            x + (60 - textBounds.width) / 2,
-            y + (40 - textBounds.height) / 2
+            x + 30,  // Half of shape width (60/2)
+            y + 20   // Half of shape height (40/2)
         );
 
         if (current->next) {

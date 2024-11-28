@@ -1,8 +1,6 @@
 // LUIS FERNANDO VALDERRABANO GARCIA A01644530
 
-#ifndef MENU_H
-#define MENU_H
-
+#pragma once
 #include "Constants.h"
 
 class Menu {
@@ -32,5 +30,3 @@ private:
 
     void ResetMenu(); // Resets menu state when exiting a submenu
 };
-
-#endif // MENU_H

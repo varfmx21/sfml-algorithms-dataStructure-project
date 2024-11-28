@@ -34,7 +34,7 @@ Menu::Menu(float width, float height) : selectedItemIndex(0), inSubMenu(false), 
         "Pilas (Stacks)", "Filas (Queues)", "Linked Lists", "Back"
     };
     std::string nonLinearDataSubMenu[MAX_SUBMENU_ITEMS] = {
-        "Arboles Binarios AVL", "Algoritmo de Dijkstra", "DFS", "BFS", "Back"
+        "Arboles Binarios AVL", "Algoritmo de Dijkstra", "BFS", "DFS", "Back"
     };
     std::string searchAlgorithmsSubMenu[MAX_SUBMENU_ITEMS] = {
         "Linear Search", "Binaria", "Back"

@@ -1,10 +1,7 @@
-#ifndef ALGORITHMS_H
-#define ALGORITHMS_H
+// LUIS FERNANDO VALDERRABANO GARCIA A01644530
 
+#pragma once
 #include "Constants.h"
-
-#define mainColor sf::Color::Magenta
-#define mainSize 35
 
 // -------------------------------------------------------------- //
 // ----------------- ALGORITMOS DE ORDENAMIENTO ----------------- //
@@ -36,5 +33,3 @@ void linearSearchVisualized(sf::RenderWindow &window, std::vector<int> &v, int t
 int partition2(std::vector<int> &vec, int low, int high);
 void quickSort(std::vector<int> &vec, int low, int high);
 int binarySearchVisualized(sf::RenderWindow &window, std::vector<int> &v, int target);
-
-#endif // ALGORITHMS_H
